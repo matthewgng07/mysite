@@ -7,9 +7,11 @@ import constants
 
 app = Flask(__name__)
 
+'''
 @app.route('/')
 def hello_world():
-    return 'Test'
+    return ''
+'''
 
 '''
 @app.route('/about_me')
