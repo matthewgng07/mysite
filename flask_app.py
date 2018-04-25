@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello from Matthew!'
+    return 'Test'
 
 '''
 @app.route('/about_me')
@@ -48,3 +48,8 @@ def register():
 def register():
     return render_template('register.html',
                            courses=constants.COURSES)
+
+
+@app.route('/')
+def homepage():
+    return render_template('index.html')
