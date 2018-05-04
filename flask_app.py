@@ -3,15 +3,19 @@
 
 from flask import Flask
 from flask import render_template
+from flask_sqlalchemy import SQLAlchemy
 import constants
 
 app = Flask(__name__)
+app.config.from_object('config.BaseConfig')
+db = SQLAlchemy(app)
 
 '''
 @app.route('/')
 def hello_world():
     return ''
 '''
+
 
 '''
 @app.route('/about_me')
@@ -55,3 +59,9 @@ def register():
 @app.route('/')
 def homepage():
     return render_template('index.html')
+
+@app.route('/top_ten_songs')
+def top_ten_songs():
+    return render_template('top_ten_songs.html', songs=constants.TOP_TEN_SONGS)
+
+
