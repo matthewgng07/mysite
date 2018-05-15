@@ -16,6 +16,7 @@ from werkzeug.security import generate_password_hash
 from flask import redirect
 from flask import url_for
 from wtforms.validators import ValidationError
+from flask import flash
 import constants
 import song
 
@@ -53,6 +54,13 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please choose a different username.')
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
+    submit = SubmitField('Sign in')
+
 
 
 
@@ -100,6 +108,17 @@ def register():
         return redirect(url_for('homepage'))
     return render_template('register.html', form=form)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if not user or not user.check_password(form.password.data):
+            flash('Username or password is incorrect.', 'danger')
+            return render_template('login.html', form=form)
+        return 'Welcome ' + user.username + '!'
+    return render_template('login.html', form=form)
+
 
 @app.route('/')
 def homepage():
@@ -117,6 +136,7 @@ nav = Nav(app)
 @nav.navigation('mysite_navbar')
 def create_navbar():
     home_view = View('Home', 'homepage')
+    login_view = View('Login', 'login')
     register_view = View('Register', 'register')
     about_me_view = View('About Me', 'about_me')
     class_schedule_view = View('Class Schedule', 'class_schedule')
@@ -125,6 +145,6 @@ def create_navbar():
                              about_me_view,
                              class_schedule_view,
                              top_ten_songs_view)
-    return Navbar('MySite', home_view, misc_subgroup, register_view)
+    return Navbar('MySite', home_view, misc_subgroup, login_view, register_view)
 
 
